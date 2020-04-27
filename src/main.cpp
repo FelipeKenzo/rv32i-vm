@@ -39,7 +39,9 @@ int main (int argc, char* argv[]) {
     mem.write_w(0x18, 0x00435113); // SRLI
     mem.write_w(0x1C, 0x40435113); // SRAI
 
+    mem.write_w(0x20, 0xAAAAA137); // LUI
+    mem.write_w(0x24, 0xAAAAA117); // AIUPC
 
-    proc.run(0,8);
+    proc.run(0,10);
     return 0;
 }
