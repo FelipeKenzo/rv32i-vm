@@ -18,13 +18,16 @@ int main (int argc, char* argv[]) {
 
     Memory mem = Memory();
     RV32i proc = RV32i(&mem, verbose);
+    
     proc.setRegister(1, 0xF0000010);
     proc.setRegister(2, 0xF000F010);
     proc.setRegister(3, 0x0C0A0010);
     proc.setRegister(4, 0x00003050);
     proc.setRegister(5, 0x0000FFAF);
-    proc.setRegister(6, 0x00001234);
+    proc.setRegister(6, 0xC0001234);
 
+    
+    // Testes
     mem.write_w(0x00, 0xAAA10113); // ADDI com overflow
     mem.write_w(0x04, 0xAAA1A113); // SLTI
     mem.write_w(0x08, 0xAAA1B113); // SLTIU
@@ -32,7 +35,11 @@ int main (int argc, char* argv[]) {
     mem.write_w(0x10, 0x0AA2E113); // ORI
     mem.write_w(0x14, 0x0FF2F113); // ANDI
 
+    mem.write_w(0x14, 0x00429113); // SLLI
+    mem.write_w(0x18, 0x00435113); // SRLI
+    mem.write_w(0x1C, 0x40435113); // SRAI
 
-    proc.run(0,6);
+
+    proc.run(0,8);
     return 0;
 }

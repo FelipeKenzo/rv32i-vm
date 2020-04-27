@@ -39,6 +39,16 @@ void RV32i::executeInstr(uint32_t instr) {
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     reg[pc] += 4;
                     break;
+                case 1: // SLLI
+                    if (verbose) {
+                        std::cout << " -> SLLI:\n";
+                        std::cout << "   imm: 0x" << std::setw(8) << std::hex << imm << "\n";
+                        std::cout << "   rs1: 0x" << std::setw(8) << std::hex << reg[rs1] << "\n";
+                    }
+                    reg[rd] = reg[rs1] << (imm & 0x1F);
+                    if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
+                    reg[pc] += 4;
+                    break;
                 case 2: // SLTI
                     if (verbose) {
                         std::cout << " -> SLTI:\n";
@@ -69,6 +79,28 @@ void RV32i::executeInstr(uint32_t instr) {
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     reg[pc] += 4;
                     break;
+                case 5: { //SRLI and SRAI
+                    uint32_t shamt = imm & 0x1F;
+                    if ((imm >> 10) & 0x1) { // SRAI
+                        if (verbose) {
+                            std::cout << " -> SRAI:\n";
+                            std::cout << "   imm: 0x" << std::setw(8) << std::hex << imm << "\n";
+                            std::cout << "   rs1: 0x" << std::setw(8) << std::hex << reg[rs1] << "\n";
+                        }   
+                        reg[rd] = (int32_t)reg[rs1] >> shamt;
+                    }
+                    else { // SRLI
+                        if (verbose) {
+                            std::cout << " -> SRLI:\n";
+                            std::cout << "   imm: 0x" << std::setw(8) << std::hex << imm << "\n";
+                            std::cout << "   rs1: 0x" << std::setw(8) << std::hex << reg[rs1] << "\n";
+                        }
+                        reg[rd] = reg[rs1] >> shamt;
+                    }
+                    if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
+                    reg[pc] += 4;
+                    break;
+                }
                 case 6: // ORI
                     if (verbose) {
                         std::cout << " -> ORI:\n";
