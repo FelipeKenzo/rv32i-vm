@@ -19,9 +19,7 @@ class RV32i {
     // Memory
     Memory* mem;
 
-    // Private Utilities
-    uint32_t signExtend(uint32_t data, uint8_t size);
-    
+    uint32_t signExtend(uint32_t data, uint8_t size);    
     void executeInstr(uint32_t instr);
 
     public:
@@ -31,7 +29,7 @@ class RV32i {
 
     // Public Utilities
     void printRegisters();
-    void printRegister(uint8_t i);
+    void printRegister(int i);
     void setRegister(uint8_t i, uint32_t data);
 
 };

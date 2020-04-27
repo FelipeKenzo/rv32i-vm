@@ -1,0 +1,6 @@
+# Extensions
+*.o
+*.pdf
+
+# Folders
+.vscode/
