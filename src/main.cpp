@@ -27,7 +27,8 @@ int main (int argc, char* argv[]) {
     proc.setRegister(6, 0xC0001234);
 
     
-    // Testes
+    // Tests:
+    // Register-Immediate Operations:
     mem.write_w(0x00, 0xAAA10113); // ADDI com overflow
     mem.write_w(0x04, 0xAAA1A113); // SLTI
     mem.write_w(0x08, 0xAAA1B113); // SLTIU
@@ -41,6 +42,8 @@ int main (int argc, char* argv[]) {
 
     mem.write_w(0x20, 0xAAAAA137); // LUI
     mem.write_w(0x24, 0xAAAAA117); // AIUPC
+
+    // Register-Register Operations:
 
     proc.run(0,10);
     return 0;
