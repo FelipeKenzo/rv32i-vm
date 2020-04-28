@@ -25,6 +25,7 @@ int main (int argc, char* argv[]) {
     proc.setRegister(4, 0x00003050);
     proc.setRegister(5, 0x0000FFAF);
     proc.setRegister(6, 0xC0001234);
+    proc.setRegister(7, 0xC0000008);
 
     
     // Tests:
@@ -35,16 +36,24 @@ int main (int argc, char* argv[]) {
     mem.write_w(0x0C, 0x0AA2C113); // XORI
     mem.write_w(0x10, 0x0AA2E113); // ORI
     mem.write_w(0x14, 0x0FF2F113); // ANDI
-
-    mem.write_w(0x14, 0x00429113); // SLLI
-    mem.write_w(0x18, 0x00435113); // SRLI
-    mem.write_w(0x1C, 0x40435113); // SRAI
-
-    mem.write_w(0x20, 0xAAAAA137); // LUI
-    mem.write_w(0x24, 0xAAAAA117); // AIUPC
+    mem.write_w(0x18, 0x00429113); // SLLI
+    mem.write_w(0x1C, 0x00435113); // SRLI
+    mem.write_w(0x20, 0x40435113); // SRAI
+    mem.write_w(0x24, 0xAAAAA137); // LUI
+    mem.write_w(0x28, 0xAAAAA117); // AIUPC
 
     // Register-Register Operations:
+    mem.write_w(0x2C, 0x00620133); // ADD 
+    mem.write_w(0x30, 0x40620133); // SUB 
+    mem.write_w(0x34, 0x00721133); // SLL 
+    mem.write_w(0x38, 0x0030A133); // SLT
+    mem.write_w(0x3C, 0x0030B133); // SLTU
+    mem.write_w(0x40, 0x00734133); // XOR
+    mem.write_w(0x44, 0x00735133); // SRL
+    mem.write_w(0x48, 0x40735133); // SRA
+    mem.write_w(0x4C, 0x00626133); // OR
+    mem.write_w(0x50, 0x0050F133); // AND
 
-    proc.run(0,10);
+    proc.run(0,21);
     return 0;
 }
