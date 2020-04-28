@@ -8,6 +8,10 @@ uint32_t RV32i::signExtend(uint32_t data, uint8_t size) {
     return data;
 }
 
+uint32_t RV32i::twosComplement(uint32_t data) {
+    return (0xFFFFFFFF - data + 1);
+}
+
 // Instruction Execution
 void RV32i::executeInstr(uint32_t instr) {
     if (verbose) {
@@ -38,7 +42,7 @@ void RV32i::executeInstr(uint32_t instr) {
                         std::cout << "   rs1: 0x" << std::setw(8) << std::hex << reg[rs1] << "\n";
                     }
                     
-                    reg[rd] = reg[rs1] + imm;
+                    setRegister(rd, reg[rs1] + imm);
                     
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
@@ -49,7 +53,7 @@ void RV32i::executeInstr(uint32_t instr) {
                         std::cout << "   rs1: 0x" << std::setw(8) << std::hex << reg[rs1] << "\n";
                     }
                     
-                    reg[rd] = reg[rs1] << (imm & 0x1F);
+                    setRegister(rd, reg[rs1] << (imm & 0x1F));
                     
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
@@ -60,7 +64,7 @@ void RV32i::executeInstr(uint32_t instr) {
                         std::cout << "   rs1: 0x" << std::setw(8) << std::hex << reg[rs1] << "\n";
                     }
                     
-                    reg[rd] = ((int32_t)reg[rs1] < (int32_t)imm);
+                    setRegister(rd, ((int32_t)reg[rs1] < (int32_t)imm));
                     
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
@@ -71,7 +75,7 @@ void RV32i::executeInstr(uint32_t instr) {
                         std::cout << "   rs1: 0x" << std::setw(8) << std::hex << reg[rs1] << "\n";
                     }
                     
-                    reg[rd] = (reg[rs1] < imm);
+                    setRegister(rd, (reg[rs1] < imm));
                     
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
@@ -82,7 +86,7 @@ void RV32i::executeInstr(uint32_t instr) {
                         std::cout << "   rs1: 0x" << std::setw(8) << std::hex << reg[rs1] << "\n";
                     }
                     
-                    reg[rd] = reg[rs1] ^ imm;
+                    setRegister(rd, reg[rs1] ^ imm);
                     
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
@@ -94,7 +98,7 @@ void RV32i::executeInstr(uint32_t instr) {
                             std::cout << "   imm: 0x" << std::setw(8) << std::hex << imm << "\n";
                             std::cout << "   rs1: 0x" << std::setw(8) << std::hex << reg[rs1] << "\n";
                         }   
-                        reg[rd] = (int32_t)reg[rs1] >> shamt;
+                        setRegister(rd, (int32_t)reg[rs1] >> shamt);
                     }
                     else { // SRLI
                         if (verbose) {
@@ -102,7 +106,7 @@ void RV32i::executeInstr(uint32_t instr) {
                             std::cout << "   imm: 0x" << std::setw(8) << std::hex << imm << "\n";
                             std::cout << "   rs1: 0x" << std::setw(8) << std::hex << reg[rs1] << "\n";
                         }
-                        reg[rd] = reg[rs1] >> shamt;
+                        setRegister(rd, reg[rs1] >> shamt);
                     }
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
@@ -114,7 +118,7 @@ void RV32i::executeInstr(uint32_t instr) {
                         std::cout << "   rs1: 0x" << std::setw(8) << std::hex << reg[rs1] << "\n";
                     }
                     
-                    reg[rd] = reg[rs1] | imm;
+                    setRegister(rd, reg[rs1] | imm);
                     
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
@@ -125,7 +129,7 @@ void RV32i::executeInstr(uint32_t instr) {
                         std::cout << "   rs1: 0x" << std::setw(8) << std::hex << reg[rs1] << "\n";
                     }
                     
-                    reg[rd] = reg[rs1] & imm;
+                    setRegister(rd, reg[rs1] & imm);
                     
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
@@ -145,7 +149,7 @@ void RV32i::executeInstr(uint32_t instr) {
                 std::cout << "   imm: 0x" << std::setw(8) << std::hex << imm << "\n";
             }
             
-            reg[rd] = imm;
+            setRegister(rd, imm);
             
             if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
             break;
@@ -161,7 +165,7 @@ void RV32i::executeInstr(uint32_t instr) {
                 std::cout << "   imm: 0x" << std::setw(8) << std::hex << imm << "\n";
             }
 
-            reg[rd] = imm + reg[pc] - 4;
+            setRegister(rd, imm + reg[pc] - 4);
 
             if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
             break;
@@ -186,7 +190,7 @@ void RV32i::executeInstr(uint32_t instr) {
                             std::cout << "   rs2: 0x" << std::setw(8) << std::hex << reg[rs2] << "\n";
                         }
 
-                        reg[rd] = reg[rs1] - reg[rs2];
+                        setRegister(rd, reg[rs1] - reg[rs2]);
                     }
                     else { // ADD
                         if (verbose) {
@@ -195,7 +199,7 @@ void RV32i::executeInstr(uint32_t instr) {
                             std::cout << "   rs2: 0x" << std::setw(8) << std::hex << reg[rs2] << "\n";
                         }
 
-                        reg[rd] = reg[rs1] + reg[rs2];
+                        setRegister(rd, reg[rs1] + reg[rs2]);
                     }
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
@@ -206,7 +210,7 @@ void RV32i::executeInstr(uint32_t instr) {
                         std::cout << "   rs2: 0x" << std::setw(8) << std::hex << reg[rs2] << "\n";
                     }
 
-                    reg[rd] = reg[rs1] << (reg[rs2] & 0x1F);
+                    setRegister(rd, reg[rs1] << (reg[rs2] & 0x1F));
 
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
@@ -217,7 +221,7 @@ void RV32i::executeInstr(uint32_t instr) {
                         std::cout << "   rs2: 0x" << std::setw(8) << std::hex << reg[rs2] << "\n";
                     }
 
-                    reg[rd] = ((int32_t)reg[rs1] < (int32_t)reg[rs2]);
+                    setRegister(rd, ((int32_t)reg[rs1] < (int32_t)reg[rs2]));
 
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
@@ -228,7 +232,7 @@ void RV32i::executeInstr(uint32_t instr) {
                         std::cout << "   rs2: 0x" << std::setw(8) << std::hex << reg[rs2] << "\n";
                     }
 
-                    reg[rd] = (reg[rs1] < reg[rs2]);
+                    setRegister(rd, (reg[rs1] < reg[rs2]));
 
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
@@ -239,7 +243,7 @@ void RV32i::executeInstr(uint32_t instr) {
                         std::cout << "   rs2: 0x" << std::setw(8) << std::hex << reg[rs2] << "\n";
                     }
 
-                    reg[rd] = reg[rs1] ^ reg[rs2];
+                    setRegister(rd, reg[rs1] ^ reg[rs2]);
 
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
@@ -251,7 +255,7 @@ void RV32i::executeInstr(uint32_t instr) {
                             std::cout << "   rs2: 0x" << std::setw(8) << std::hex << reg[rs2] << "\n";
                         }
 
-                        reg[rd] = (int32_t)reg[rs2] >> (reg[rs2] & 0x1F);
+                        setRegister(rd, (int32_t)reg[rs2] >> (reg[rs2] & 0x1F));
                     }
                     else { // SRL
                         if (verbose) {
@@ -260,7 +264,7 @@ void RV32i::executeInstr(uint32_t instr) {
                             std::cout << "   rs2: 0x" << std::setw(8) << std::hex << reg[rs2] << "\n";
                         }
 
-                        reg[rd] = reg[rs1] >> (reg[rs2] & 0x1F);
+                        setRegister(rd, reg[rs1] >> (reg[rs2] & 0x1F));
                     }
                     
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
@@ -272,7 +276,7 @@ void RV32i::executeInstr(uint32_t instr) {
                         std::cout << "   rs2: 0x" << std::setw(8) << std::hex << reg[rs2] << "\n";
                     }
 
-                    reg[rd] = reg[rs1] | reg[rs2];
+                    setRegister(rd, reg[rs1] | reg[rs2]);
 
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
@@ -283,12 +287,51 @@ void RV32i::executeInstr(uint32_t instr) {
                         std::cout << "   rs2: 0x" << std::setw(8) << std::hex << reg[rs2] << "\n";
                     }
 
-                    reg[rd] = reg[rs1] & reg[rs2];
+                    setRegister(rd, reg[rs1] & reg[rs2]);
 
                     if (verbose) std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n\n";
                     break;
             }
+            break;
         }
+        
+        /*** Control Transfer Instructions ***/
+        // Unconditional jumps:
+        case 0x6F: { //JAL
+            
+            // extract operands:
+            uint32_t rd     = (instr >>  7) & 0x1F;
+            uint32_t offset =  signExtend((instr & 0xFFFFF000) >> 12, 20) * 2; // offset is multiple of 2 bytes.
+
+            if (verbose) {
+                std::cout << " -> JAL:\n";
+                std::cout << "offset: 0x" << std::setw(8) << std::hex << offset << "\n";
+            }
+            
+            setRegister(rd, reg[pc]); // J is implemented with rd = 0.
+
+            reg[pc] = reg[pc] - 4 + (int32_t)offset;
+            if (verbose) {
+                std::cout << "    rd: 0x" << std::setw(8) << std::hex << reg[rd] << "\n";
+                std::cout << "    pc: 0x" << std::setw(8) << std::hex << reg[pc] << "\n\n";
+            }
+            break;
+        }
+        case 0x67: { //JALR
+
+            // extract operands:
+            uint32_t rd     = (instr >>  7) & 0x1F;
+            uint32_t rs1    = (instr >> 15) & 0x1F;
+            uint32_t imm    = (instr >> 20, 12);
+
+            if (verbose) {
+                std::cout << " -> JALR:\n";
+                std::cout << "offset: 0x" << std::setw(8) << std::hex << offset << "\n";
+            }
+
+            break;
+        }
+        
         default:
             std::cout << "\n\n";
     }
@@ -325,6 +368,8 @@ void RV32i::run(uint32_t origin, int maxcount) {
         // Fetch Instruction
         instr = *(mem->read(reg[pc]));
         reg[pc] += 4;
+
+        //if (verbose) std::cout << "    pc: 0x" << std::setw(8) << std::hex << reg[pc] << "\n";
         
         // Decode and Execute instructions
         executeInstr(instr);
@@ -350,5 +395,5 @@ void RV32i::printRegister(int i) {
 }
 
 void RV32i::setRegister(uint8_t i, uint32_t data) {
-    reg[i] = data;
+    if (i > 0) reg[i] = data;
 }

@@ -54,6 +54,12 @@ int main (int argc, char* argv[]) {
     mem.write_w(0x4C, 0x00626133); // OR
     mem.write_w(0x50, 0x0050F133); // AND
 
-    proc.run(0,21);
+    // Unconditional Jumps:
+    mem.write_w(0x54, 0x000140EF); // JAL positive offset
+    mem.write_w(0x7C, 0xFFFEE0EF); // JAL negative offset
+    mem.write_w(0x58, 0x0001406F); // J   positive offset
+    //mem.write_w(0x80, 0x0);
+
+    proc.run(0,24);
     return 0;
 }

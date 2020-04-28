@@ -19,7 +19,10 @@ class RV32i {
     // Memory
     Memory* mem;
 
-    uint32_t signExtend(uint32_t data, uint8_t size);    
+    // Private utilities
+    uint32_t signExtend(uint32_t data, uint8_t size);
+    uint32_t twosComplement(uint32_t data);
+
     void executeInstr(uint32_t instr);
 
     public:
